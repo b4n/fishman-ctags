@@ -23,8 +23,6 @@
  *	 DATA DECLARATIONS
  */
 
-typedef enum eException { ExceptionNone, ExceptionEOF } exception_t;
-
 typedef enum eKeywordId {
 	KEYWORD_NONE = -1,
 	KEYWORD_package,
@@ -65,7 +63,8 @@ typedef enum eTokenType {
 	TOKEN_STAR,
 	TOKEN_LEFT_ARROW,
 	TOKEN_DOT,
-	TOKEN_COMMA
+	TOKEN_COMMA,
+	TOKEN_EOF
 } tokenType;
 
 typedef struct sTokenInfo {
@@ -111,7 +110,6 @@ static keywordDesc GoKeywordTable[] = {
 };
 
 static int Lang_go;
-static jmp_buf Exception;
 static vString *scope = NULL;
 static goKind scopeKind = GOTAG_UNDEFINED;
 
@@ -228,7 +226,7 @@ getNextChar:
 	switch (c)
 	{
 		case EOF:
-			longjmp (Exception, (int)ExceptionEOF);
+			token->type = TOKEN_EOF;
 			break;
 
 		case '/':
@@ -380,7 +378,8 @@ static void skipToMatched (tokenInfo *const token)
 	if (isType (token, open_token))
 	{
 		nest_level++;
-		while (!(isType (token, close_token) && (nest_level == 0)))
+		while (!(isType (token, close_token) && (nest_level == 0)) &&
+			   !isType (token, TOKEN_EOF))
 		{
 			readToken (token);
 			if (isType (token, open_token))
@@ -482,7 +481,7 @@ again:
 // Skip to the next semicolon, skipping over matching brackets.
 static void skipToTopLevelSemicolon (tokenInfo *const token)
 {
-	while (!isType (token, TOKEN_SEMICOLON))
+	while (!isType (token, TOKEN_SEMICOLON) && !isType (token, TOKEN_EOF))
 	{
 		readToken (token);
 		skipToMatched (token);
@@ -611,7 +610,7 @@ again:
 	if (usesParens)
 	{
 		readToken (name);
-		if (!isType (name, TOKEN_CLOSE_PAREN))
+		if (!isType (name, TOKEN_CLOSE_PAREN) && !isType (name, TOKEN_EOF))
 			goto again;
 	}
 
@@ -647,17 +646,14 @@ static void parseGoFile (tokenInfo *const token)
 					break;
 			}
 		}
-	} while (TRUE);
+	} while (token->type != TOKEN_EOF);
 }
 
 static void findGoTags (void)
 {
 	tokenInfo *const token = newToken ();
-	exception_t exception;
 
-	exception = (exception_t) (setjmp (Exception));
-	while (exception == ExceptionNone)
-		parseGoFile (token);
+	parseGoFile (token);
 
 	deleteToken (token);
 	vStringDelete (scope);
