@@ -80,10 +80,6 @@ typedef struct sTokenInfo {
 *   DATA DEFINITIONS
 */
 
-static int Lang_go;
-static jmp_buf Exception;
-static vString *scope;
-
 typedef enum {
 	GOTAG_UNDEFINED = -1,
 	GOTAG_PACKAGE,
@@ -113,6 +109,11 @@ static keywordDesc GoKeywordTable[] = {
 	{"map", KEYWORD_map},
 	{"chan", KEYWORD_chan}
 };
+
+static int Lang_go;
+static jmp_buf Exception;
+static vString *scope = NULL;
+static goKind scopeKind = GOTAG_UNDEFINED;
 
 /*
 *   FUNCTION DEFINITIONS
@@ -503,6 +504,12 @@ static void makeTag (tokenInfo *const token, const goKind kind)
 	e.kindName = GoKinds [kind].name;
 	e.kind = GoKinds [kind].letter;
 
+	if (scope)
+	{
+		e.extensionFields.scope[0] = GoKinds[scopeKind].name;
+		e.extensionFields.scope[1] = vStringValue (scope);
+	}
+
 	makeTagEntry (&e);
 
 	if (scope && Option.include.qualifiedTags)
@@ -524,10 +531,11 @@ static void parsePackage (tokenInfo *const token __unused__)
 	readToken (name);
 	Assert (isType (name, TOKEN_IDENTIFIER));
 	makeTag (name, GOTAG_PACKAGE);
-	if (!scope && Option.include.qualifiedTags)
+	if (!scope)
 	{
 		scope = vStringNew ();
 		vStringCopy (scope, name->string);
+		scopeKind = GOTAG_PACKAGE;
 	}
 
 	deleteToken (name);

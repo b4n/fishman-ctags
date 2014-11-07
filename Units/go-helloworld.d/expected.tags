@@ -1,2 +1,2 @@
-main	Units/go-helloworld.d/input.go	/^func main() {$/;"	f
+main	Units/go-helloworld.d/input.go	/^func main() {$/;"	f	package:main
 main	Units/go-helloworld.d/input.go	/^package main$/;"	p

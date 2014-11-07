@@ -1,2 +1,2 @@
-main	Units/go-timeouts.d/input.go	/^func main() {$/;"	f
+main	Units/go-timeouts.d/input.go	/^func main() {$/;"	f	package:main
 main	Units/go-timeouts.d/input.go	/^package main$/;"	p
