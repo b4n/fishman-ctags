@@ -1,0 +1,3 @@
+f	Units/go-goroutines.d/input.go	/^func f(from string) {$/;"	f
+main	Units/go-goroutines.d/input.go	/^func main() {$/;"	f
+main	Units/go-goroutines.d/input.go	/^package main$/;"	p
