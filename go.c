@@ -122,8 +122,7 @@ static goKind scopeKind = GOTAG_UNDEFINED;
 static boolean isIdentChar (const int c)
 {
 	return (boolean)
-		(isalpha (c) || isdigit (c) || c == '$' ||
-		 c == '@' || c == '_' || c == '#' || c > 128);
+		(isalpha (c) || isdigit (c) ||  c == '_' || c > 128);
 }
 
 static void initialize (const langType language)
