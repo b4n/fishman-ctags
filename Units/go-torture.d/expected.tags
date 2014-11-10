@@ -1,0 +1,33 @@
+A	Units/go-torture.d/input.go	/^const (A = iota;B;C;$/;"	c	package:main
+B	Units/go-torture.d/input.go	/^const (A = iota;B;C;$/;"	c	package:main
+C	Units/go-torture.d/input.go	/^const (A = iota;B;C;$/;"	c	package:main
+D	Units/go-torture.d/input.go	/^	D = iota << (1 + iota*2)$/;"	c	package:main
+E	Units/go-torture.d/input.go	/^	E$/;"	c	package:main
+F	Units/go-torture.d/input.go	/^	F=3.14*(1+2*3)\/34e7;I=1)$/;"	c	package:main
+G	Units/go-torture.d/input.go	/^const ignored int*\/const (G=6); var g int$/;"	c	package:main
+H	Units/go-torture.d/input.go	/^func (tt * T7) f4(a func () func ()) (func (), int) {return func (){}, 1};func f5(){};const H=1$/;"	c	package:main
+I	Units/go-torture.d/input.go	/^	F=3.14*(1+2*3)\/34e7;I=1)$/;"	c	package:main
+T1	Units/go-torture.d/input.go	/^	T1 map[string]int$/;"	t	package:main
+T2	Units/go-torture.d/input.go	/^	T2 <-chan float32$/;"	t	package:main
+T3	Units/go-torture.d/input.go	/^	T3 chan []string$/;"	t	package:main
+T4	Units/go-torture.d/input.go	/^	T4 chan<- *[12]string$/;"	t	package:main
+T5	Units/go-torture.d/input.go	/^	T5 interface {$/;"	t	package:main
+T6	Units/go-torture.d/input.go	/^type T6 struct {$/;"	t	package:main
+T7	Units/go-torture.d/input.go	/^type (T7 func (a struct{_ int; _ float32}, b int) (int, map[string]int);T8 float32)$/;"	t	package:main
+T8	Units/go-torture.d/input.go	/^type (T7 func (a struct{_ int; _ float32}, b int) (int, map[string]int);T8 float32)$/;"	t	package:main
+T9	Units/go-torture.d/input.go	/^func f1() {};func f2() {};type\/*no newline here*\/T9 int\/*var ignored int$/;"	t	package:main
+a	Units/go-torture.d/input.go	/^var (a, b, c int$/;"	v	package:main
+b	Units/go-torture.d/input.go	/^var (a, b, c int$/;"	v	package:main
+c	Units/go-torture.d/input.go	/^var (a, b, c int$/;"	v	package:main
+d	Units/go-torture.d/input.go	/^d T5$/;"	v	package:main
+e	Units/go-torture.d/input.go	/^e T4$/;"	v	package:main
+f	Units/go-torture.d/input.go	/^f interface{})$/;"	v	package:main
+f1	Units/go-torture.d/input.go	/^func f1() {};func f2() {};type\/*no newline here*\/T9 int\/*var ignored int$/;"	f	package:main
+f2	Units/go-torture.d/input.go	/^func f1() {};func f2() {};type\/*no newline here*\/T9 int\/*var ignored int$/;"	f	package:main
+f3	Units/go-torture.d/input.go	/^func (t *T1) f3() (a, b int){$/;"	f	package:main
+f4	Units/go-torture.d/input.go	/^func (tt * T7) f4(a func () func ()) (func (), int) {return func (){}, 1};func f5(){};const H=1$/;"	f	package:main
+f5	Units/go-torture.d/input.go	/^func (tt * T7) f4(a func () func ()) (func (), int) {return func (){}, 1};func f5(){};const H=1$/;"	f	package:main
+g	Units/go-torture.d/input.go	/^const ignored int*\/const (G=6); var g int$/;"	v	package:main
+h	Units/go-torture.d/input.go	/^}; var h int$/;"	v	package:main
+main	Units/go-torture.d/input.go	/^func main() {$/;"	f	package:main
+main	Units/go-torture.d/input.go	/^package main$/;"	p
