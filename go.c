@@ -47,9 +47,8 @@ typedef struct sKeywordDesc {
 
 typedef enum eTokenType {
 	TOKEN_NONE = -1,
-	TOKEN_CHARACTER,
-	// Don't need TOKEN_FORWARD_SLASH
-	TOKEN_FORWARD_SLASH,
+	// Token not important for top-level Go parsing
+	TOKEN_OTHER,
 	TOKEN_KEYWORD,
 	TOKEN_IDENTIFIER,
 	TOKEN_STRING,
@@ -62,7 +61,6 @@ typedef enum eTokenType {
 	TOKEN_SEMICOLON,
 	TOKEN_STAR,
 	TOKEN_LEFT_ARROW,
-	TOKEN_LESS_THAN,
 	TOKEN_DOT,
 	TOKEN_COMMA,
 	TOKEN_EOF
@@ -119,11 +117,16 @@ static goKind scopeKind = GOTAG_UNDEFINED;
 */
 
 // XXX UTF-8
+static boolean isStartIdentChar (const int c)
+{
+	return (boolean)
+		(isalpha (c) ||  c == '_' || c > 128);
+}
+
 static boolean isIdentChar (const int c)
 {
 	return (boolean)
-		(isalpha (c) || isdigit (c) || c == '$' ||
-		 c == '@' || c == '_' || c == '#' || c > 128);
+		(isStartIdentChar (c) || isdigit (c));
 }
 
 static void initialize (const langType language)
@@ -173,7 +176,9 @@ static void parseString (vString *const string, const int delimiter)
 			end = TRUE;
 		else if (c == '\\' && delimiter != '`')
 		{
-			c = fileGetc ();	/* This maybe a ' or ". */
+			c = fileGetc ();
+			if (c != '\'' && c != '\"')
+				vStringPut (string, '\\');
 			vStringPut (string, c);
 		}
 		else if (c == delimiter)
@@ -187,7 +192,6 @@ static void parseString (vString *const string, const int delimiter)
 static void parseIdentifier (vString *const string, const int firstChar)
 {
 	int c = firstChar;
-	//Assert (isIdentChar (c));
 	do
 	{
 		vStringPut (string, c);
@@ -214,6 +218,7 @@ getNextChar:
 		token->filePosition = getInputFilePosition ();
 		if (c == '\n' && (lastTokenType == TOKEN_IDENTIFIER ||
 						  lastTokenType == TOKEN_STRING ||
+						  lastTokenType == TOKEN_OTHER ||
 						  lastTokenType == TOKEN_CLOSE_PAREN ||
 						  lastTokenType == TOKEN_CLOSE_CURLY ||
 						  lastTokenType == TOKEN_CLOSE_SQUARE))
@@ -228,6 +233,10 @@ getNextChar:
 	{
 		case EOF:
 			token->type = TOKEN_EOF;
+			break;
+
+		case ';':
+			token->type = TOKEN_SEMICOLON;
 			break;
 
 		case '/':
@@ -267,7 +276,7 @@ getNextChar:
 						fileUngetc (hasNewline ? '\n' : ' ');
 						goto getNextChar;
 					default:
-						token->type = TOKEN_FORWARD_SLASH;
+						token->type = TOKEN_OTHER;
 						fileUngetc (d);
 						break;
 				}
@@ -291,7 +300,7 @@ getNextChar:
 				else
 				{
 					fileUngetc (d);
-					token->type = TOKEN_LESS_THAN;
+					token->type = TOKEN_OTHER;
 				}
 			}
 			break;
@@ -333,14 +342,19 @@ getNextChar:
 			break;
 
 		default:
-			parseIdentifier (token->string, c);
-			token->lineNumber = getSourceLineNumber ();
-			token->filePosition = getInputFilePosition ();
-			token->keyword = lookupKeyword (vStringValue (token->string), Lang_go);
-			if (isKeyword (token, KEYWORD_NONE))
-				token->type = TOKEN_IDENTIFIER;
+			if (isStartIdentChar (c))
+			{
+				parseIdentifier (token->string, c);
+				token->lineNumber = getSourceLineNumber ();
+				token->filePosition = getInputFilePosition ();
+				token->keyword = lookupKeyword (vStringValue (token->string), Lang_go);
+				if (isKeyword (token, KEYWORD_NONE))
+					token->type = TOKEN_IDENTIFIER;
+				else
+					token->type = TOKEN_KEYWORD;
+			}
 			else
-				token->type = TOKEN_KEYWORD;
+				token->type = TOKEN_OTHER;
 			break;
 	}
 
@@ -404,6 +418,7 @@ static void skipType (tokenInfo *const token)
 {
 again:
 	// Type      = TypeName | TypeLit | "(" Type ")" .
+	// Skips also function multiple return values "(" Type {"," Type} ")"
 	if (isType (token, TOKEN_OPEN_PAREN))
 	{
 		skipToMatched (token);
@@ -476,16 +491,6 @@ again:
 		// surrounded by parentheses as a type, and does nothing if what
 		// follows is not a type.
 		goto again;
-	}
-}
-
-// Skip to the next semicolon, skipping over matching brackets.
-static void skipToTopLevelSemicolon (tokenInfo *const token)
-{
-	while (!isType (token, TOKEN_SEMICOLON) && !isType (token, TOKEN_EOF))
-	{
-		readToken (token);
-		skipToMatched (token);
 	}
 }
 
@@ -601,21 +606,32 @@ static void parseConstTypeVar (tokenInfo *const token, goKind kind)
 again:
 	while (1)
 	{
-		makeTag (name, kind);
-		readToken (token);
-		if (!isType (token, TOKEN_COMMA) && !isType (token, TOKEN_CLOSE_PAREN))
+		if (isType (name, TOKEN_IDENTIFIER))
+		{
+			makeTag (name, kind);
+			readToken (token);
+		}
+		if (!isType (token, TOKEN_COMMA))
 			break;
 		readToken (name);
 	}
 
 	skipType (token);
-	skipToTopLevelSemicolon (token);
+	while (!isType (token, TOKEN_SEMICOLON) && !isType (token, TOKEN_CLOSE_PAREN) 
+			&& !isType (token, TOKEN_EOF))
+	{
+		readToken (token);
+		skipToMatched (token);
+	}
 
 	if (usesParens)
 	{
-		readToken (name);
-		if (!isType (name, TOKEN_CLOSE_PAREN) && !isType (name, TOKEN_EOF))
-			goto again;
+		if (!isType (token, TOKEN_CLOSE_PAREN)) // we are at TOKEN_SEMICOLON
+		{
+			readToken (name);
+			if (!isType (name, TOKEN_CLOSE_PAREN) && !isType (name, TOKEN_EOF))
+				goto again;
+		}
 	}
 
 	deleteToken (name);
@@ -649,6 +665,11 @@ static void parseGoFile (tokenInfo *const token)
 				default:
 					break;
 			}
+		}
+		else if (isType (token, TOKEN_OPEN_PAREN) || isType (token, TOKEN_OPEN_CURLY) ||
+			isType (token, TOKEN_OPEN_SQUARE))
+		{
+			skipToMatched (token);
 		}
 	} while (token->type != TOKEN_EOF);
 }
