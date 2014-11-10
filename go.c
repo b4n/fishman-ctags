@@ -47,7 +47,6 @@ typedef struct sKeywordDesc {
 
 typedef enum eTokenType {
 	TOKEN_NONE = -1,
-	TOKEN_CHARACTER,
 	// Don't need TOKEN_FORWARD_SLASH
 	TOKEN_FORWARD_SLASH,
 	TOKEN_KEYWORD,
