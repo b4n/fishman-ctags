@@ -9,6 +9,7 @@
 
 AC_PREREQ([2.61])
 AC_INIT([ctags],[fishman])
+AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects -Wall])
 AC_CONFIG_HEADERS([config.h])
 if ! test -e "${srcdir}/config.h.in"; then
    echo "---"
@@ -240,6 +241,8 @@ fi
 # -------------------
 
 AC_PROG_CC
+AC_PROG_RANLIB
+m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 
 case `uname` in
 	HP-UX)
@@ -568,15 +571,7 @@ AC_CHECK_DECLS([_NSGetEnviron],[],[],[
 # Output files
 # ------------
 
-
-rm -f Makefile
-if test "$enable_maintainer_mode" = yes ; then
-	AC_MSG_RESULT(creating maintainer Makefile)
-	ln -s maintainer.mak Makefile
-	makefile_out=
-else
-	makefile_out=Makefile
-fi
-AC_OUTPUT($makefile_out)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
 
 # vim:ts=4:sw=4:

@@ -2,12 +2,12 @@
 #
 # Shared macros
 
-HEADERS = \
+headers = \
 	args.h ctags.h debug.h entry.h flags.h general.h get.h htable.h keyword.h \
 	main.h options.h parse.h parsers.h pcoproc.h read.h routines.h sort.h \
 	strlist.h trashbox.h vstring.h
 
-SOURCES = \
+sources = \
 	ada.c \
 	args.c \
 	ant.c \
@@ -72,20 +72,20 @@ SOURCES = \
 	yacc.c \
 	vstring.c
 
-ENVIRONMENT_HEADERS = \
+environment_headers = \
     e_amiga.h e_djgpp.h e_mac.h e_msoft.h e_os2.h e_qdos.h e_riscos.h e_vms.h
 
-ENVIRONMENT_SOURCES = \
+environment_sources = \
     argproc.c mac.c qdos.c
 
-REGEX_SOURCES = gnu_regex/regex.c
+regex_sources = gnu_regex/regex.c
 
-REGEX_HEADERS = gnu_regex/regex.h
+regex_headers = gnu_regex/regex.h
 
-FNMATCH_SOURCES = fnmatch/fnmatch.c
+fnmatch_sources = fnmatch/fnmatch.c
 
-FNMATCH_HEADERS = fnmatch/fnmatch.h
+fnmatch_headers = fnmatch/fnmatch.h
 
-OBJECTS = \
-	$(SOURCES:.c=.$(OBJEXT)) \
+objects = \
+	$(sources:.c=.$(OBJEXT)) \
 	$(LIBOBJS)
