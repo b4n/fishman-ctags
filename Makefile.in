@@ -143,6 +143,9 @@ DEST_READ_INC	= $(incdir)/$(READ_INC)
 DEST_CMAN	= $(man1dir)/$(CMAN)
 DEST_EMAN	= $(man1dir)/$(EMAN)
 
+REV := $(shell git rev-parse --short HEAD 2>/dev/null || echo 0)
+ALL_CPPFLAGS += -DCTAGS_COMMIT_ID=0x$(REV)
+
 #
 # primary rules
 #
@@ -150,6 +153,12 @@ all: $(CTAGS_EXEC) $(READ_LIB) $(READ_CMD)
 
 $(CTAGS_EXEC): $(OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJECTS) $(LIBS)
+
+options.$(OBJEXT): commit-stamp
+
+commit-stamp: FORCE
+	echo "$(REV)" > $@.tmp
+	if diff -q $@ $@.tmp; then rm -f $@.tmp; else mv -f $@.tmp $@; fi
 
 dctags$(EXEEXT): debug.c $(SOURCES) $(HEADERS)
 	$(CC) -I. -I$(srcdir) $(DEFS) $(ALL_CPPFLAGS) -DDEBUG -g $(LDFLAGS) -o $@ debug.c $(SOURCES)

@@ -1099,6 +1099,9 @@ static void printProgramIdentification (void)
 	printf ("%s %s, %s %s\n",
 	        PROGRAM_NAME, PROGRAM_VERSION,
 	        PROGRAM_COPYRIGHT, AUTHOR_NAME);
+#if defined(CTAGS_COMMIT_ID) && CTAGS_COMMIT_ID != 0
+	printf ("  Git commit ID: %.7x\n", CTAGS_COMMIT_ID);
+#endif
 	printf ("  Compiled: %s, %s\n", __DATE__, __TIME__);
 	printf ("  Addresses: <%s>, %s\n", AUTHOR_EMAIL, PROGRAM_URL);
 	printFeatureList ();
