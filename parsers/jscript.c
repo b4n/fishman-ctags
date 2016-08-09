@@ -8,6 +8,7 @@
  *	 files.
  *
  *	 Reference: http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf
+ *	 Reference (HTML version): http://www.ecma-international.org/ecma-262/7.0/
  *
  *	 This is a good reference for different forms of the function statement:
  *		 http://www.permadi.com/tutorial/jsFunc/
@@ -52,26 +53,45 @@ static stringList *FunctionNames;
 /*	Used to specify type of keyword.
 */
 typedef enum eKeywordId {
+	KEYWORD_break,
+	KEYWORD_case,
+	KEYWORD_catch,
+	KEYWORD_class,
+	KEYWORD_const,
+	KEYWORD_continue,
+	KEYWORD_debugger,
+	KEYWORD_default,
+	KEYWORD_delete,
+	KEYWORD_do,
+	KEYWORD_else,
+	KEYWORD_export,
+	KEYWORD_extends,
+	KEYWORD_finally,
+	KEYWORD_for,
 	KEYWORD_function,
+	KEYWORD_if,
+	KEYWORD_import,
+	KEYWORD_in,
+	KEYWORD_instanceof,
+	KEYWORD_new,
+	KEYWORD_return,
+	KEYWORD_super,
+	KEYWORD_switch,
+	KEYWORD_this,
+	KEYWORD_throw,
+	KEYWORD_try,
+	KEYWORD_typeof,
+	KEYWORD_var,
+	KEYWORD_void,
+	KEYWORD_while,
+	KEYWORD_with,
+	KEYWORD_yield,
+	/* those aren't really keywords as per the standard, but we use them */
 	KEYWORD_capital_function,
 	KEYWORD_capital_object,
 	KEYWORD_prototype,
-	KEYWORD_var,
 	KEYWORD_let,
-	KEYWORD_const,
-	KEYWORD_new,
-	KEYWORD_this,
-	KEYWORD_for,
-	KEYWORD_while,
-	KEYWORD_do,
-	KEYWORD_if,
-	KEYWORD_else,
-	KEYWORD_switch,
-	KEYWORD_try,
-	KEYWORD_catch,
-	KEYWORD_finally,
-	KEYWORD_sap,
-	KEYWORD_return
+	KEYWORD_sap
 } keywordId;
 
 typedef enum eTokenType {
@@ -139,26 +159,45 @@ static kindOption JsKinds [] = {
 
 static const keywordTable JsKeywordTable [] = {
 	/* keyword		keyword ID */
+	{ "break",		KEYWORD_break				},
+	{ "case",		KEYWORD_case				},
+	{ "catch",		KEYWORD_catch				},
+	{ "class",		KEYWORD_class				},
+	{ "const",		KEYWORD_const				},
+	{ "continue",	KEYWORD_continue			},
+	{ "debugger",	KEYWORD_debugger			},
+	{ "default",	KEYWORD_default				},
+	{ "delete",		KEYWORD_delete				},
+	{ "do",			KEYWORD_do					},
+	{ "else",		KEYWORD_else				},
+	{ "export",		KEYWORD_export				},
+	{ "extends",	KEYWORD_extends				},
+	{ "finally",	KEYWORD_finally				},
+	{ "for",		KEYWORD_for					},
 	{ "function",	KEYWORD_function			},
+	{ "if",			KEYWORD_if					},
+	{ "import",		KEYWORD_import				},
+	{ "in",			KEYWORD_in					},
+	{ "instanceof",	KEYWORD_instanceof			},
+	{ "new",		KEYWORD_new					},
+	{ "return",		KEYWORD_return				},
+	{ "super",		KEYWORD_super				},
+	{ "switch",		KEYWORD_switch				},
+	{ "this",		KEYWORD_this				},
+	{ "throw",		KEYWORD_throw				},
+	{ "try",		KEYWORD_try					},
+	{ "typeof",		KEYWORD_typeof				},
+	{ "var",		KEYWORD_var					},
+	{ "void",		KEYWORD_void				},
+	{ "while",		KEYWORD_while				},
+	{ "with",		KEYWORD_with				},
+	{ "yield",		KEYWORD_yield				},
+	/* those aren't really keywords as per the standard, but we use them */
 	{ "Function",	KEYWORD_capital_function	},
 	{ "Object",		KEYWORD_capital_object		},
 	{ "prototype",	KEYWORD_prototype			},
-	{ "var",		KEYWORD_var					},
 	{ "let",		KEYWORD_let					},
-	{ "const",		KEYWORD_const				},
-	{ "new",		KEYWORD_new					},
-	{ "this",		KEYWORD_this				},
-	{ "for",		KEYWORD_for					},
-	{ "while",		KEYWORD_while				},
-	{ "do",			KEYWORD_do					},
-	{ "if",			KEYWORD_if					},
-	{ "else",		KEYWORD_else				},
-	{ "switch",		KEYWORD_switch				},
-	{ "try",		KEYWORD_try					},
-	{ "catch",		KEYWORD_catch				},
-	{ "finally",	KEYWORD_finally				},
 	{ "sap",	    KEYWORD_sap    				},
-	{ "return",		KEYWORD_return				}
 };
 
 /*
