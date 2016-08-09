@@ -6,7 +6,7 @@ var c = [
   { a: "hi", b: 41 }
 ];
 
-var class = function() {
+var klass = function() {
   this.test1 = {
     foo: [ 1, 2, 3],
     bar: [ 4, 5, 9]
