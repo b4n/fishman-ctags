@@ -1981,6 +1981,9 @@ static void parseJsFile (tokenInfo *const token)
 
 		if (isType (token, TOKEN_KEYWORD) && token->keyword == KEYWORD_function)
 			parseFunction (token);
+		else if (isType (token, TOKEN_KEYWORD) && (token->keyword == KEYWORD_export ||
+		                                           token->keyword == KEYWORD_default))
+			/* skip those at top-level */;
 		else if (isType (token, TOKEN_KEYWORD) && token->keyword == KEYWORD_sap)
 			parseUI5 (token);
 		else
