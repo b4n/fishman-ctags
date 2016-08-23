@@ -379,10 +379,6 @@ built-in language names.
 		Note, however, that this could potentially more than double the
 		size of the tag file.
 
-	.
-		Similar to the f extra flag but the entry addresses the end line
-		of the file.
-
 --fields=[+|-]flags|*
 	Specifies the available extension fields which are to be included in
 	the entries of the tag file (see TAG FILE FORMAT, below, for more

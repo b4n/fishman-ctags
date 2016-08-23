@@ -433,12 +433,6 @@ when multiple occurrences of a tag name occur in the tag file.
 Note, however, that this could potentially more than double the
 size of the tag file.
 .UNINDENT
-.INDENT 7.0
-.TP
-.B \&.
-Similar to the f extra flag but the entry addresses the end line
-of the file.
-.UNINDENT
 .TP
 .B \-\-fields=[+|\-]flags|*
 Specifies the available extension fields which are to be included in
