@@ -100,7 +100,8 @@ if HAVE_RST2MAN
 rst2man_verbose = $(rst2man_verbose_@AM_V@)
 rst2man_verbose_ = $(rst2man_verbose_@AM_DEFAULT_V@)
 rst2man_verbose_0 = @echo RST2MAN "  $@";
-%.1.in: %.1.in.rst
+SUFFIXES = .1.rst .1
+.1.rst.1:
 	$(rst2man_verbose)$(RST2MAN) $< $@
 endif
 
