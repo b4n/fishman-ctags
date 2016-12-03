@@ -102,6 +102,7 @@
 	SmlParser, \
 	SqlParser, \
 	SystemdUnitParser, \
+	SwiftParser, \
 	TclParser, \
 	TexParser, \
 	TTCNParser, \

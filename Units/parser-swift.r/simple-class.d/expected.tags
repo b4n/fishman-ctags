@@ -1,0 +1,5 @@
+Animal	input.swift	/^class Animal {$/;"	c
+init	input.swift	/^  init(specieName: String, legCount: Int) {$/;"	f	class:Animal
+legs	input.swift	/^  var legs: Int$/;"	m	class:Animal	typeref:typename:Int
+name	input.swift	/^  var name: String$/;"	m	class:Animal	typeref:typename:String
+simpleDescription	input.swift	/^  func simpleDescription() -> String {$/;"	f	class:Animal	typeref:typename:String

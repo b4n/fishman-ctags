@@ -221,6 +221,7 @@
     <ClCompile Include="..\parsers\pythonloggingconfig.c" />
     <ClCompile Include="..\main\ptrarray.c" />
     <ClCompile Include="..\main\objpool.c" />
+    <ClCompile Include="..\parsers\swift.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\fnmatch\fnmatch.h" />

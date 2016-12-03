@@ -1,0 +1,16 @@
+appleSummary	input.swift	/^let appleSummary = "I have \\(numberOfApples) apples."$/;"	C
+explicitDouble	input.swift	/^var explicitDouble: Double = 70$/;"	v	typeref:typename:Double
+fruitSummary	input.swift	/^let fruitSummary = "I have \\(numberOfApples + numberOfOranges) pieces of fruit."$/;"	C
+fruits	input.swift	/^var fruits = ["mango", "kiwi", "avocado"]$/;"	v
+greeting	input.swift	/^    let greeting = "Hello, \\(personName)!"$/;"	C
+implicitDouble	input.swift	/^var implicitDouble = 70.0$/;"	v
+implicitInteger	input.swift	/^var implicitInteger = 70$/;"	v
+numberOfApples	input.swift	/^let numberOfApples = 3$/;"	C
+numberOfBananas	input.swift	/^let numberOfBananas: Int = 10$/;"	C	typeref:typename:Int
+numberOfOranges	input.swift	/^let numberOfOranges = 5$/;"	C
+people	input.swift	/^let people = ["Anna": 67, "Beto": 8, "Jack": 33, "Sam": 25]$/;"	C
+result	input.swift	/^    let result = "\\(personName) is \\(age) years old."$/;"	C
+sayAge	input.swift	/^func sayAge(personName personName: String, personAge age: Int) -> String {$/;"	f	typeref:typename:String
+sayHello	input.swift	/^func sayHello(personName: String) -> String {$/;"	f	typeref:typename:String
+國	input.swift	/^var 國 = "美國"$/;"	v
+🌎	input.swift	/^var 🌎 = "🐝🐙🐧🐨🐸"$/;"	v
