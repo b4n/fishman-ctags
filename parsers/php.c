@@ -616,10 +616,8 @@ static void parseHeredoc (vString *const string)
 	if (c != '\r' && c != '\n') /* missing newline, give up */
 		goto error;
 
-	do
+	for (; c != EOF; c = getcFromInputFile ())
 	{
-		c = getcFromInputFile ();
-
 		if (c != '\r' && c != '\n')
 			vStringPut (string, (char) c);
 		else
@@ -670,7 +668,6 @@ static void parseHeredoc (vString *const string)
 				vStringPut (string, (char) extra);
 		}
 	}
-	while (c != EOF);
 
 	return;
 
