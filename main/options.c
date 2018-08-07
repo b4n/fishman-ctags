@@ -89,9 +89,15 @@ enum eOptionLimits {
 	MaxSupportedTagFormat = 2
 };
 
+typedef struct sOptionDescriptionField {
+	const char *tag;
+	int (*writer) (FILE *fp);
+} optionDescriptionField;
+
 typedef struct sOptionDescription {
 	int usedByEtags;
 	const char *description;
+	optionDescriptionField *fields;
 } optionDescription;
 
 typedef void (*parametricOptionHandler) (const char *const option, const char *const parameter);
@@ -190,6 +196,35 @@ static OptionLoadingStage Stage = OptionLoadingStageNone;
 -   Locally used only
 */
 
+static int compareLetters (const void *p1, const void *p2)
+{
+	return *(char *)p1 - *(char *)p2;
+}
+
+static int printShortExtrasFlags (FILE *fp)
+{
+	int r = 0;
+	int i;
+	vString *letters = vStringNew ();
+
+	for (i = 0; r != EOF && i < countXtags (); i++)
+	{
+		xtagDefinition *xdef = getXtagDefinition (i);
+
+		if (xdef && xdef->letter != NUL_XTAG_LETTER)
+			vStringPut (letters, xdef->letter);
+	}
+
+	qsort (vStringValue (letters), vStringLength (letters), 1, compareLetters);
+	fputs (vStringValue (letters), fp);
+	vStringDelete (letters);
+
+	return r;
+}
+
+#define ATTACH_DESCRIPTION_FIELDS(...) \
+	.fields = (optionDescriptionField []) { __VA_ARGS__, { NULL, NULL } }
+
 static optionDescription LongOptionDescription [] = {
  {1,"  -a   Append the tags to an existing tag file."},
 #ifdef DEBUG
@@ -245,7 +280,8 @@ static optionDescription LongOptionDescription [] = {
  {0,"       Uses the specified type of EX command to locate tags [mix]."},
 #endif
  {1,"  --extras=[+|-]flags"},
- {1,"      Include extra tag entries for selected information (flags: \"Ffq.\") [F]."},
+ {1,"      Include extra tag entries for selected information (flags: \"{flags}\") [F].",
+	ATTACH_DESCRIPTION_FIELDS ({ "flags", printShortExtrasFlags }) },
  {1,"  --extras-<LANG|*>=[+|-]flags"},
  {1,"      Include <LANG> own extra tag entries for selected information"},
  {1,"      (flags: see the output of --list-extras=<LANG> option)."},
@@ -1390,7 +1426,51 @@ static void printOptionDescriptions (const optionDescription *const optDesc)
 	for (i = 0 ; optDesc [i].description != NULL ; ++i)
 	{
 		if (! Option.etags || optDesc [i].usedByEtags)
-			puts (optDesc [i].description);
+		{
+			if (! optDesc [i].fields)
+				puts (optDesc [i].description);
+			else
+			{
+				const char *desc = optDesc [i].description;
+				const char *tagStart;
+
+				while ((tagStart = strchr (desc, '{')) != NULL)
+				{
+					const char *tagEnd = strchr (tagStart, '}');
+					if (! tagEnd)
+					{
+						fputs (desc, stdout);
+						break;
+					}
+					else
+					{
+						int f;
+						int (*writer) (FILE *) = NULL;
+						for (f = 0; optDesc [i].fields [f].tag != NULL; f++)
+						{
+							if (strlen (optDesc [i].fields [f].tag) == tagEnd - tagStart - 1 &&
+							    strncmp (optDesc [i].fields [f].tag, tagStart + 1, tagEnd - tagStart - 1) == 0)
+							{
+								writer = optDesc [i].fields [f].writer;
+								break;
+							}
+						}
+						if (writer)
+						{
+							fwrite (desc, sizeof *desc, tagStart - desc, stdout);
+							writer (stdout);
+						}
+						else
+						{
+							/* leave the tag in place */
+							fwrite (desc, sizeof *desc, tagEnd + 1 - desc, stdout);
+						}
+						desc = tagEnd + 1;
+					}
+				}
+				puts (desc);
+			}
+		}
 	}
 }
 
