@@ -104,6 +104,17 @@ static int makeSimpleAutoItTag (const NestingLevels *const nls,
 	return makeAutoItTag (nls, name, kindIndex, NULL);
 }
 
+static void attachEndField (const NestingLevels *const nls)
+{
+	NestingLevel *nl = nestingLevelsGetCurrent (nls);
+	if (nl)
+	{
+		tagEntryInfo *e;
+		e = getEntryInCorkQueue (nl->corkIndex);
+		e->extensionFields.endLine = getInputLineNumber ();
+	}
+}
+
 static void findAutoItTags (void)
 {
 	vString *name = vStringNew ();
@@ -143,7 +154,10 @@ static void findAutoItTags (void)
 				}
 			}
 			else if (match (p, "endregion"))
+			{
+				attachEndField (nls);
 				nestingLevelsPop (nls);
+			}
 			else if (match (p, "include"))
 			{
 				p += 7; /* strlen("include") = 7 */
@@ -206,7 +220,10 @@ static void findAutoItTags (void)
 				}
 			}
 			else if (match (p, "endfunc"))
+			{
+				attachEndField (nls);
 				nestingLevelsPop (nls);
+			}
 			else if ((isGlobal = match (p, "global")) || match (p, "local"))
 			{
 				p += isGlobal ? 6 : 5;
